@@ -67,7 +67,7 @@
 #define DISPLAY_TYPE DISPLAY_TYPE_DEBUG //ASCII Printout for debugging
 #define SPEED_PLL 0
 #define SPEEDSOURCE EXTERNAL
-#define AUTODETECT 1
+#define AUTODETECT 0
 #define REVERSE 1
 
 #endif /* CONFIG_H_ */
