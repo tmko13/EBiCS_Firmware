@@ -22,7 +22,7 @@
 #define TRIGGER_DEFAULT 2020
 #define _T 2028
 #define CAL_BAT_V 256
-#define CAL_V 15LL<<8
+#define CAL_V 25
 #define CAL_I 38LL<<8
 #define INDUCTANCE 6
 #define RESISTANCE 40
@@ -60,8 +60,8 @@
 #define BATTERYCURRENT_MAX 10000
 #define REGEN_CURRENT 200
 #define REGEN_CURRENT_MAX 10000
-#define VOLTAGE_MIN 2000
-#define VOLTAGE_MAX 2800
+#define VOLTAGE_MIN 1200
+#define VOLTAGE_MAX 1680
 #define SPEC_ANGLE -715827882
 #define TS_MODE
 #define DISPLAY_TYPE DISPLAY_TYPE_DEBUG //ASCII Printout for debugging
