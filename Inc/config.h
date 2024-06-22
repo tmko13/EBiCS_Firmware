@@ -5,7 +5,6 @@
  *  Author: stancecoke
  */
 
-
 #ifndef CONFIG_H_
 #define CONFIG_H_
 #include "stdint.h"
@@ -65,7 +64,7 @@
 #define VOLTAGE_MAX 2800
 #define SPEC_ANGLE -715827882
 #define TS_MODE
-#define DISPLAY_TYPE DISPLAY_TYPE_BAFANG //Bafang Displays, including 'Blaupunkt' 
+#define DISPLAY_TYPE DISPLAY_TYPE_KINGMETER_901U //KM5S
 #define SPEED_PLL 1
 #define SPEEDSOURCE EXTERNAL
 #define AUTODETECT 0
