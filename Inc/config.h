@@ -50,7 +50,7 @@
 #define FRAC_HIGH 30
 #define FRAC_LOW 15
 #define THROTTLE_OFFSET 1150
-#define THROTTLE_MAX 3400
+#define THROTTLE_MAX 2150
 #define PUSHASSIST_CURRENT 30
 #define WHEEL_CIRCUMFERENCE 2200
 #define GEAR_RATIO 116
@@ -64,10 +64,10 @@
 #define VOLTAGE_MAX 1680
 #define SPEC_ANGLE -715827882
 #define TS_MODE
-#define DISPLAY_TYPE DISPLAY_TYPE_DEBUG //ASCII Printout for debugging
+#define DISPLAY_TYPE DISPLAY_TYPE_BAFANG //Bafang Displays, including 'Blaupunkt' 
 #define SPEED_PLL 1
 #define SPEEDSOURCE EXTERNAL
-#define AUTODETECT 1
+#define AUTODETECT 0
 #define REVERSE 1
 
 #endif /* CONFIG_H_ */
