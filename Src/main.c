@@ -848,7 +848,7 @@ int main(void)
 				//limit currest target to max value
 				if(int32_temp_current_target>PH_CURRENT_MAX) int32_temp_current_target = PH_CURRENT_MAX;
 				//set target to zero, if pedals are not turning or no torque on the pedals
-				if((uint32_PAS_counter > PAS_TIMEOUT) || (uint32_Torque_counter > TORQUE_TIMEOUT)){
+				if((uint32_PAS_counter > PAS_TIMEOUT)){ // || (uint32_Torque_counter > TORQUE_TIMEOUT)){
 					int32_temp_current_target = 0;
 					if(uint32_torque_cumulated>0)uint32_torque_cumulated--; //ramp down cumulated torque value
 				}
