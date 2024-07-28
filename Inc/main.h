@@ -94,6 +94,7 @@
 #define INT_TEMP_25 0
 #define USE_FIX_POSITIONS 0
 #define STARTHELP_RAMP_DIVISOR 4
+#define TORQUE_TIMEOUT 1000
 //Put values from the startup message after autodetect here, if you want to use fix positions. 32bit values for the hall angles!
 #define KV 80
 #define HALL_ORDER 1
