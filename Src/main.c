@@ -153,7 +153,6 @@ uint32_t uint32_PAS_fraction= 100;
 uint32_t uint32_SPEED_counter=32000;
 uint32_t uint32_SPEEDx100_cumulated=0;
 uint32_t uint32_PAS=32000;
-uint32_t uint32_Torque_counter= TORQUE_TIMEOUT+1;
 
 q31_t q31_rotorposition_PLL = 0;
 q31_t q31_angle_per_tic = 0;
@@ -164,9 +163,7 @@ int16_t i16_hall_order=1;
 uint16_t ui16_erps=0;
 
 uint32_t uint32_torque_cumulated=0;
-uint32_t uint32_torque_actual=0;
-uint32_t uint32_torque_cumulated_divisor=0;
-uint16_t uint16_cnt_pas_imp_starthelp=0;
+uint32_t uint32_torque_cumulated_divisor=1;
 uint32_t uint32_PAS_cumulated=32000;
 uint16_t uint16_mapped_throttle=0;
 uint16_t uint16_mapped_PAS=0;
@@ -694,24 +691,13 @@ int main(void)
 			ui16_throttle = ui32_throttle_cumulated>>4;
 
 			ui8_adc_regular_flag=0;
-
-			
-			//calc actual torque
-#ifdef NCTE
-			uint32_torque_actual = (ui16_throttle_offset-ui16_throttle);
-#else
-			uint32_torque_actual = (ui16_throttle-ui16_throttle_offset);
-#endif
-			if (uint32_torque_actual>0) uint32_Torque_counter=0;
 		}
 
 		//PAS signal processing
-				
-		//reset parameters for startehelp (when bike is moving < 5 km/h and PAS Timeout)
-		if((uint32_SPEEDx100_cumulated<200) && ((uint32_PAS_counter > PAS_TIMEOUT))){ // || (uint32_Torque_counter > TORQUE_TIMEOUT))){
-			uint32_torque_cumulated = 0;
+		
+		//reset parameter for startehelp (when bike is moving < 2 km/h and PAS Timeout)
+		if((uint32_SPEEDx100_cumulated<200) && (uint32_PAS_counter >= PAS_TIMEOUT)){
 			uint32_torque_cumulated_divisor= 1;
-			uint16_cnt_pas_imp_starthelp=0;
 		}
 		
 		
@@ -734,29 +720,24 @@ int main(void)
 				
 				// change the period of PAS pulses over which the torque signal is smoothed. 
 				// This causes the smoothed torque signal to increase more quickly when starting up. 
-				// So that the torque does not rise abruptly, it is first smoothed over a small part (STARTHELP_RAMP_DIVISOR) of a complete revolution. 
-				// Once this part has been reached, the number of pulses considered increases until a full revolution has been completed. 
+				// the number of pulses considered increases until a full revolution has been completed. 
 				// After this, the smoothing remains at one full rotation
-				if (uint16_cnt_pas_imp_starthelp < PAS_IMP_PER_TURN){
-					uint16_cnt_pas_imp_starthelp ++;
-					uint32_torque_cumulated_divisor ++;
-					//if (uint16_cnt_pas_imp_starthelp > (PAS_IMP_PER_TURN/STARTHELP_RAMP_DIVISOR)){
-						//uint32_torque_cumulated_divisor ++;
-					//}				
+				if (uint16_cnt_pas_imp_starthelp < PAS_IMP_PER_TURN){					
+						uint32_torque_cumulated_divisor ++;
+					}				
 				}
 				else{
 					//read in and sum up torque-signal within one crank revolution
 					uint32_torque_cumulated -= uint32_torque_cumulated/uint32_torque_cumulated_divisor;
 				}
 
-				//sum up torque
-				//if(0<uint32_torque_actual)uint32_torque_cumulated += uint32_torque_actual;
-
 #ifdef NCTE
 				if(ui16_throttle<ui16_throttle_offset)uint32_torque_cumulated += (ui16_throttle_offset-ui16_throttle);
 #else
 				if(ui16_throttle>ui16_throttle_offset)uint32_torque_cumulated += (ui16_throttle-ui16_throttle_offset);
 #endif
+
+
 			}
 		}
 
@@ -852,8 +833,8 @@ int main(void)
 
 				//limit currest target to max value
 				if(int32_temp_current_target>PH_CURRENT_MAX) int32_temp_current_target = PH_CURRENT_MAX;
-				//set target to zero, if pedals are not turning or no torque on the pedals
-				if(uint32_PAS_counter > PAS_TIMEOUT){ //|| (uint32_Torque_counter > 2000)){
+				//set target to zero, if pedals are not turning
+				if(uint32_PAS_counter > PAS_TIMEOUT){
 					int32_temp_current_target = 0;
 					if(uint32_torque_cumulated>0)uint32_torque_cumulated--; //ramp down cumulated torque value
 				}
@@ -1720,7 +1701,7 @@ int main(void)
 			if (uint32_SPEED_counter<128000)uint32_SPEED_counter++;					//counter for external Speedsensor
 			if(uint16_full_rotation_counter<8000)uint16_full_rotation_counter++;	//full rotation counter for motor standstill detection
 			if(uint16_half_rotation_counter<8000)uint16_half_rotation_counter++;	//half rotation counter for motor standstill detection
-			if(uint32_Torque_counter < TORQUE_TIMEOUT+1) uint32_Torque_counter++;   //counter for torque sensor
+
 		}
 		//HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 	}
