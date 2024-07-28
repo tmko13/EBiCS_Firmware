@@ -739,7 +739,7 @@ int main(void)
 				// After this, the smoothing remains at one full rotation
 				if (uint16_cnt_pas_imp_starthelp < PAS_IMP_PER_TURN){
 					uint16_cnt_pas_imp_starthelp ++;
-					uint32_torque_cumulated_divisor ++
+					uint32_torque_cumulated_divisor ++;
 					//if (uint16_cnt_pas_imp_starthelp > (PAS_IMP_PER_TURN/STARTHELP_RAMP_DIVISOR)){
 						//uint32_torque_cumulated_divisor ++;
 					//}				
