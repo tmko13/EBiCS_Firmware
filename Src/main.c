@@ -708,9 +708,9 @@ int main(void)
 		//PAS signal processing
 				
 		//reset parameters for startehelp (when bike is moving < 5 km/h and PAS Timeout)
-		if((uint32_SPEEDx100_cumulated<500) && ((uint32_PAS_counter > PAS_TIMEOUT))){ // || (uint32_Torque_counter > TORQUE_TIMEOUT))){
+		if((uint32_SPEEDx100_cumulated<200) && ((uint32_PAS_counter > PAS_TIMEOUT))){ // || (uint32_Torque_counter > TORQUE_TIMEOUT))){
 			uint32_torque_cumulated = 0;
-			uint32_torque_cumulated_divisor= PAS_IMP_PER_TURN/STARTHELP_RAMP_DIVISOR;
+			uint32_torque_cumulated_divisor= 1;
 			uint16_cnt_pas_imp_starthelp=0;
 		}
 		
@@ -739,10 +739,10 @@ int main(void)
 				// After this, the smoothing remains at one full rotation
 				if (uint16_cnt_pas_imp_starthelp < PAS_IMP_PER_TURN){
 					uint16_cnt_pas_imp_starthelp ++;
-					
-					if (uint16_cnt_pas_imp_starthelp > (PAS_IMP_PER_TURN/STARTHELP_RAMP_DIVISOR)){
-						uint32_torque_cumulated_divisor ++;
-					}				
+					uint32_torque_cumulated_divisor ++
+					//if (uint16_cnt_pas_imp_starthelp > (PAS_IMP_PER_TURN/STARTHELP_RAMP_DIVISOR)){
+						//uint32_torque_cumulated_divisor ++;
+					//}				
 				}
 				else{
 					//read in and sum up torque-signal within one crank revolution
@@ -853,7 +853,7 @@ int main(void)
 				//limit currest target to max value
 				if(int32_temp_current_target>PH_CURRENT_MAX) int32_temp_current_target = PH_CURRENT_MAX;
 				//set target to zero, if pedals are not turning or no torque on the pedals
-				if((uint32_PAS_counter > PAS_TIMEOUT)|| (uint32_Torque_counter > 2000)){
+				if(uint32_PAS_counter > PAS_TIMEOUT){ //|| (uint32_Torque_counter > 2000)){
 					int32_temp_current_target = 0;
 					if(uint32_torque_cumulated>0)uint32_torque_cumulated--; //ramp down cumulated torque value
 				}
