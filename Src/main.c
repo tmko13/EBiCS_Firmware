@@ -724,7 +724,7 @@ int main(void)
 				// After this, the smoothing remains at one full rotation
 				if (uint32_torque_cumulated_divisor < PAS_IMP_PER_TURN){					
 						uint32_torque_cumulated_divisor ++;
-					}				
+									
 				}
 				else{
 					//read in and sum up torque-signal within one crank revolution
