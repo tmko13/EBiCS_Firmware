@@ -750,8 +750,13 @@ int main(void)
 				}
 
 				//sum up torque
-				if(0<uint32_torque_actual)uint32_torque_cumulated += uint32_torque_actual;
+				//if(0<uint32_torque_actual)uint32_torque_cumulated += uint32_torque_actual;
 
+#ifdef NCTE
+				if(ui16_throttle<ui16_throttle_offset)uint32_torque_cumulated += (ui16_throttle_offset-ui16_throttle);
+#else
+				if(ui16_throttle>ui16_throttle_offset)uint32_torque_cumulated += (ui16_throttle-ui16_throttle_offset);
+#endif
 			}
 		}
 
