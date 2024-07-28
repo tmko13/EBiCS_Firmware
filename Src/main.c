@@ -694,20 +694,19 @@ int main(void)
 			ui16_throttle = ui32_throttle_cumulated>>4;
 
 			ui8_adc_regular_flag=0;
+
+			
+			//calc actual torque
+#ifdef NCTE
+			uint32_torque_actual = (ui16_throttle_offset-ui16_throttle);
+#else
+			uint32_torque_actual = (ui16_throttle-ui16_throttle_offset);
+#endif
+			if (uint32_torque_actual>0) uint32_Torque_counter=0;
 		}
 
 		//PAS signal processing
-		
-
-		//calc actual torque
-#ifdef NCTE
-		uint32_torque_actual = (ui16_throttle_offset-ui16_throttle);
-#else
-		uint32_torque_actual = (ui16_throttle-ui16_throttle_offset);
-#endif
-		if (uint32_torque_actual>0) uint32_Torque_counter=0;
-		
-		
+				
 		//reset parameters for startehelp (when bike is moving < 5 km/h and PAS Timeout)
 		if((uint32_SPEEDx100_cumulated<500) && ((uint32_PAS_counter > PAS_TIMEOUT) || (uint32_Torque_counter > TORQUE_TIMEOUT))){
 			uint32_torque_cumulated = 0;
