@@ -708,7 +708,7 @@ int main(void)
 		//PAS signal processing
 				
 		//reset parameters for startehelp (when bike is moving < 5 km/h and PAS Timeout)
-		if((uint32_SPEEDx100_cumulated<500) && ((uint32_PAS_counter > PAS_TIMEOUT) || (uint32_Torque_counter > TORQUE_TIMEOUT))){
+		if((uint32_SPEEDx100_cumulated<500) && ((uint32_PAS_counter > PAS_TIMEOUT))){ // || (uint32_Torque_counter > TORQUE_TIMEOUT))){
 			uint32_torque_cumulated = 0;
 			uint32_torque_cumulated_divisor= PAS_IMP_PER_TURN/STARTHELP_RAMP_DIVISOR;
 			uint16_cnt_pas_imp_starthelp=0;
