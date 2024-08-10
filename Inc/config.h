@@ -45,7 +45,7 @@
 #define SPDSHFT 0
 #define SPEEDFILTER 1
 #define SIXSTEPTHRESHOLD 3500
-#define TS_COEF 8000
+#define TS_COEF 14000
 #define PAS_TIMEOUT 4000
 #define RAMP_END 1600
 #define PAS_IMP_PER_TURN 16
