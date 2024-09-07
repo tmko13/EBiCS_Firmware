@@ -1060,16 +1060,16 @@ int main(void)
 #if (DISPLAY_TYPE == DISPLAY_TYPE_DEBUG && !defined(FAST_LOOP_LOG))
 				//print values for debugging
 
-				sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d, %d, %d\r\n",
-						adcData[1],
-						ui16_throttle_offset,
-						ui16_timertics,
-						uint32_PAS,
-						MS.Battery_Current,
-						int32_temp_current_target ,
-						MS.i_q,
-						MS.u_abs,
-						SystemState);
+				//sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d, %d, %d\r\n",
+				//		adcData[1],
+					//	ui16_throttle_offset,
+					//	ui16_timertics,
+					//	uint32_PAS,
+					//	MS.Battery_Current,
+					//	int32_temp_current_target ,
+					//	MS.i_q,
+					//	MS.u_abs,
+					//	SystemState);
 				// sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d\r\n",(uint16_t)adcData[0],(uint16_t)adcData[1],(uint16_t)adcData[2],(uint16_t)adcData[3],(uint16_t)(adcData[4]),(uint16_t)(adcData[5]),(uint16_t)(adcData[6])) ;
 				// sprintf_(buffer, "%d, %d, %d, %d, %d, %d\r\n",tic_array[0],tic_array[1],tic_array[2],tic_array[3],tic_array[4],tic_array[5]) ;
 				i=0;
