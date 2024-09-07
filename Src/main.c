@@ -708,7 +708,7 @@ int main(void)
 				uint32_PAS_counter =0;
 				ui8_PAS_flag=0;
 				//read in and sum up torque-signal within one crank revolution (for sempu sensor 32 PAS pulses/revolution, 2^5=32)
-				uint32_torque_cumulated -= uint32_torque_cumulated>>4;
+				uint32_torque_cumulated -= uint32_torque_cumulated/PAS_IMP_PER_TURN;
 #ifdef NCTE
 				if(ui16_throttle<ui16_throttle_offset)uint32_torque_cumulated += (ui16_throttle_offset-ui16_throttle);
 #else
@@ -807,21 +807,16 @@ int main(void)
 
 #ifdef TS_MODE //torque-sensor mode
 				//calculate current target form torque, cadence and assist level
-				//MS.assist_level = 127;
-				int32_temp_current_target = (TS_COEF*(int32_t)(MS.assist_level)* (uint32_torque_cumulated>>4)/uint32_PAS)>>8; //>>5 aus Mittelung über eine Kurbelumdrehung, >>8 aus KM5S-Protokoll Assistlevel 0..255
+				int32_temp_current_target = (TS_COEF*(int32_t)(MS.assist_level)* (uint32_torque_cumulated/PAS_IMP_PER_TURN)/uint32_PAS)>>8; //>>5 aus Mittelung über eine Kurbelumdrehung, >>8 aus KM5S-Protokoll Assistlevel 0..255
 
 				//limit currest target to max value
 				if(int32_temp_current_target>PH_CURRENT_MAX) int32_temp_current_target = PH_CURRENT_MAX;
 				//set target to zero, if pedals are not turning
 				if(uint32_PAS_counter > PAS_TIMEOUT){
-					//sprintf_(buffer, "Timeout %d, %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated, (int32_t)(MS.assist_level));
 					int32_temp_current_target = 0;
 					if(uint32_torque_cumulated>0)uint32_torque_cumulated--; //ramp down cumulated torque value
 				}
-				//else  {
-				//	sprintf_(buffer, "Not Timeout %d, %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated, (int32_t)(MS.assist_level));
-				//}
-				
+
 
 
 #else		// torque-simulation mode with throttle override
@@ -1061,16 +1056,16 @@ int main(void)
 #if (DISPLAY_TYPE == DISPLAY_TYPE_DEBUG && !defined(FAST_LOOP_LOG))
 				//print values for debugging
 
-				//sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d, %d, %d\r\n",
-				//		adcData[1],
-					//	ui16_throttle_offset,
-					//	ui16_timertics,
-					//	uint32_PAS,
-					//	MS.Battery_Current,
-					//	int32_temp_current_target ,
-					//	MS.i_q,
-					//	MS.u_abs,
-					//	SystemState);
+				sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d, %d, %d\r\n",
+						adcData[1],
+						ui16_throttle_offset,
+						ui16_timertics,
+						uint32_PAS,
+						MS.Battery_Current,
+						int32_temp_current_target ,
+						MS.i_q,
+						MS.u_abs,
+						SystemState);
 				// sprintf_(buffer, "%d, %d, %d, %d, %d, %d, %d\r\n",(uint16_t)adcData[0],(uint16_t)adcData[1],(uint16_t)adcData[2],(uint16_t)adcData[3],(uint16_t)(adcData[4]),(uint16_t)(adcData[5]),(uint16_t)(adcData[6])) ;
 				// sprintf_(buffer, "%d, %d, %d, %d, %d, %d\r\n",tic_array[0],tic_array[1],tic_array[2],tic_array[3],tic_array[4],tic_array[5]) ;
 				i=0;
