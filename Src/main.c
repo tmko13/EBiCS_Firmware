@@ -807,19 +807,20 @@ int main(void)
 
 #ifdef TS_MODE //torque-sensor mode
 				//calculate current target form torque, cadence and assist level
+				MS.assist_level = 127;
 				int32_temp_current_target = (TS_COEF*(int32_t)(MS.assist_level)* (uint32_torque_cumulated>>4)/uint32_PAS)>>8; //>>5 aus Mittelung über eine Kurbelumdrehung, >>8 aus KM5S-Protokoll Assistlevel 0..255
 
 				//limit currest target to max value
 				if(int32_temp_current_target>PH_CURRENT_MAX) int32_temp_current_target = PH_CURRENT_MAX;
 				//set target to zero, if pedals are not turning
 				if(uint32_PAS_counter > PAS_TIMEOUT){
-					sprintf_(buffer, "Timeout %d, %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated, (int32_t)(MS.assist_level));
+					//sprintf_(buffer, "Timeout %d, %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated, (int32_t)(MS.assist_level));
 					int32_temp_current_target = 0;
 					if(uint32_torque_cumulated>0)uint32_torque_cumulated--; //ramp down cumulated torque value
 				}
-				else  {
-					sprintf_(buffer, "Not Timeout %d, %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated, (int32_t)(MS.assist_level));
-				}
+				//else  {
+				//	sprintf_(buffer, "Not Timeout %d, %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated, (int32_t)(MS.assist_level));
+				//}
 				
 
 
