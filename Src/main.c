@@ -163,7 +163,6 @@ int16_t i16_hall_order=1;
 uint16_t ui16_erps=0;
 
 uint32_t uint32_torque_cumulated=0;
-uint32_t uint32_torque_cumulated_divisor=1;
 uint32_t uint32_PAS_cumulated=32000;
 uint16_t uint16_mapped_throttle=0;
 uint16_t uint16_mapped_PAS=0;
@@ -694,13 +693,6 @@ int main(void)
 		}
 
 		//PAS signal processing
-		
-		//reset parameter for startehelp (when bike is moving < 2 km/h and PAS Timeout)
-		if((uint32_SPEEDx100_cumulated<200) && (uint32_PAS_counter >= PAS_TIMEOUT)){
-			uint32_torque_cumulated_divisor= 1;
-		}
-		uint32_torque_cumulated_divisor= 16;
-		
 		if(ui8_PAS_flag){
 
 			if(uint32_PAS_counter>100){ //debounce
@@ -715,22 +707,8 @@ int main(void)
 				uint32_PAS_HIGH_counter=0;
 				uint32_PAS_counter =0;
 				ui8_PAS_flag=0;
-				
-				// adapt sum up for starthelp
-				
-				// change the period of PAS pulses over which the torque signal is smoothed. 
-				// This causes the smoothed torque signal to increase more quickly when starting up. 
-				// the number of pulses considered increases until a full revolution has been completed. 
-				// After this, the smoothing remains at one full rotation
-				//if (uint32_torque_cumulated_divisor < PAS_IMP_PER_TURN){					
-					//	uint32_torque_cumulated_divisor ++;
-									
-				//}
-				//else{
-					//read in and sum up torque-signal within one crank revolution
-					uint32_torque_cumulated -= uint32_torque_cumulated/uint32_torque_cumulated_divisor;
-				//}
-
+				//read in and sum up torque-signal within one crank revolution (for sempu sensor 32 PAS pulses/revolution, 2^5=32)
+				uint32_torque_cumulated -= uint32_torque_cumulated>>5;
 #ifdef NCTE
 				if(ui16_throttle<ui16_throttle_offset)uint32_torque_cumulated += (ui16_throttle_offset-ui16_throttle);
 #else
@@ -829,8 +807,7 @@ int main(void)
 
 #ifdef TS_MODE //torque-sensor mode
 				//calculate current target form torque, cadence and assist level
-				//int32_temp_current_target = (TS_COEF*(int32_t)(MS.assist_level)* (uint32_torque_cumulated/uint32_torque_cumulated_divisor)/uint32_PAS)>>8; // >>8 aus KM5S-Protokoll Assistlevel 0..255
-                                int32_temp_current_target = (TS_COEF*50* (uint32_torque_cumulated/uint32_torque_cumulated_divisor)/uint32_PAS)>>8; // >>8 aus KM5S-Protokoll Assistlevel 0..255
+				int32_temp_current_target = (TS_COEF*(int32_t)(MS.assist_level)* (uint32_torque_cumulated>>5)/uint32_PAS)>>8; //>>5 aus Mittelung über eine Kurbelumdrehung, >>8 aus KM5S-Protokoll Assistlevel 0..255
 
 				//limit currest target to max value
 				if(int32_temp_current_target>PH_CURRENT_MAX) int32_temp_current_target = PH_CURRENT_MAX;
@@ -862,8 +839,6 @@ int main(void)
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_DEBUG)
 				uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, PH_CURRENT_MAX, 0); // Full amps in debug mode
-				
-
 #endif
 
 
@@ -901,15 +876,13 @@ int main(void)
 #endif //end NTCE
 
 #ifndef TS_MODE //normal PAS Mode
-				sprintf_("ifndef TS_MODE \n ");
+
 				if (uint32_PAS_counter < PAS_TIMEOUT) int32_temp_current_target = uint16_mapped_PAS;		//set current target in torque-simulation-mode, if pedals are turning
 				else  {
 					int32_temp_current_target= 0;//pedals are not turning, stop motor
 					uint32_PAS_cumulated=32000;
 					uint32_PAS=32000;
 				}
-				
-
 
 #endif		// end #ifndef TS_MODE
 				//check for throttle override
@@ -968,9 +941,7 @@ int main(void)
 					int32_temp_current_target=map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, MP.speedLimit*100,(MP.speedLimit+2)*100,int32_temp_current_target,0);
 				}
 				else{ //limit to 6km/h if pedals are not turning
-					#ifdef LIMIT_THR
-						int32_temp_current_target=map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, 500,700,int32_temp_current_target,0);
-					#endif
+					int32_temp_current_target=map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, 500,700,int32_temp_current_target,0);
 				}
 			}
 			//			else int32_temp_current_target=int32_temp_current_target;
