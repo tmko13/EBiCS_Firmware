@@ -813,12 +813,12 @@ int main(void)
 				if(int32_temp_current_target>PH_CURRENT_MAX) int32_temp_current_target = PH_CURRENT_MAX;
 				//set target to zero, if pedals are not turning
 				if(uint32_PAS_counter > PAS_TIMEOUT){
-					sprintf_(buffer, "Timeout %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated);
+					sprintf_(buffer, "Timeout %d, %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated, (int32_t)(MS.assist_level));
 					int32_temp_current_target = 0;
 					if(uint32_torque_cumulated>0)uint32_torque_cumulated--; //ramp down cumulated torque value
 				}
 				else  {
-					sprintf_(buffer, "Not Timeout %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated);
+					sprintf_(buffer, "Not Timeout %d, %d, %d \r\n", int32_temp_current_target, uint32_torque_cumulated, (int32_t)(MS.assist_level));
 				}
 				
 
