@@ -699,7 +699,7 @@ int main(void)
 		if((uint32_SPEEDx100_cumulated<200) && (uint32_PAS_counter >= PAS_TIMEOUT)){
 			uint32_torque_cumulated_divisor= 1;
 		}
-		
+		uint32_torque_cumulated_divisor= 16;
 		
 		if(ui8_PAS_flag){
 
@@ -722,14 +722,14 @@ int main(void)
 				// This causes the smoothed torque signal to increase more quickly when starting up. 
 				// the number of pulses considered increases until a full revolution has been completed. 
 				// After this, the smoothing remains at one full rotation
-				if (uint32_torque_cumulated_divisor < PAS_IMP_PER_TURN){					
-						uint32_torque_cumulated_divisor ++;
+				//if (uint32_torque_cumulated_divisor < PAS_IMP_PER_TURN){					
+					//	uint32_torque_cumulated_divisor ++;
 									
-				}
-				else{
+				//}
+				//else{
 					//read in and sum up torque-signal within one crank revolution
 					uint32_torque_cumulated -= uint32_torque_cumulated/uint32_torque_cumulated_divisor;
-				}
+				//}
 
 #ifdef NCTE
 				if(ui16_throttle<ui16_throttle_offset)uint32_torque_cumulated += (ui16_throttle_offset-ui16_throttle);
