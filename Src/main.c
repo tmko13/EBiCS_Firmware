@@ -862,6 +862,8 @@ int main(void)
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_DEBUG)
 				uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, PH_CURRENT_MAX, 0); // Full amps in debug mode
+				
+
 #endif
 
 
@@ -900,12 +902,25 @@ int main(void)
 
 #ifndef TS_MODE //normal PAS Mode
 
-				if (uint32_PAS_counter < PAS_TIMEOUT) int32_temp_current_target = uint16_mapped_PAS;		//set current target in torque-simulation-mode, if pedals are turning
-				else  {
-					int32_temp_current_target= 0;//pedals are not turning, stop motor
-					uint32_PAS_cumulated=32000;
-					uint32_PAS=32000;
+				//if (uint32_PAS_counter < PAS_TIMEOUT) int32_temp_current_target = uint16_mapped_PAS;		//set current target in torque-simulation-mode, if pedals are turning
+				//else  {
+					//int32_temp_current_target= 0;//pedals are not turning, stop motor
+					//uint32_PAS_cumulated=32000;
+					//uint32_PAS=32000;
+				//}
+				
+				//calculate current target form torque, cadence and assist level
+				//int32_temp_current_target = (TS_COEF*(int32_t)(MS.assist_level)* (uint32_torque_cumulated/uint32_torque_cumulated_divisor)/uint32_PAS)>>8; // >>8 aus KM5S-Protokoll Assistlevel 0..255
+                                int32_temp_current_target = (TS_COEF*50* (uint32_torque_cumulated/uint32_torque_cumulated_divisor)/uint32_PAS)>>8; // >>8 aus KM5S-Protokoll Assistlevel 0..255
+
+				//limit currest target to max value
+				if(int32_temp_current_target>PH_CURRENT_MAX) int32_temp_current_target = PH_CURRENT_MAX;
+				//set target to zero, if pedals are not turning
+				if(uint32_PAS_counter > PAS_TIMEOUT){
+					int32_temp_current_target = 0;
+					if(uint32_torque_cumulated>0)uint32_torque_cumulated--; //ramp down cumulated torque value
 				}
+
 
 #endif		// end #ifndef TS_MODE
 				//check for throttle override
