@@ -807,7 +807,7 @@ int main(void)
 
 #ifdef TS_MODE //torque-sensor mode
 				//calculate current target form torque, cadence and assist level
-				MS.assist_level = 127;
+				//MS.assist_level = 127;
 				int32_temp_current_target = (TS_COEF*(int32_t)(MS.assist_level)* (uint32_torque_cumulated>>4)/uint32_PAS)>>8; //>>5 aus Mittelung über eine Kurbelumdrehung, >>8 aus KM5S-Protokoll Assistlevel 0..255
 
 				//limit currest target to max value
