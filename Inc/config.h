@@ -65,8 +65,8 @@
 #define VOLTAGE_MIN 1340
 #define VOLTAGE_MAX 1600
 #define SPEC_ANGLE -715827882
-#define DEBUG_MODE
-#define DISPLAY_TYPE DISPLAY_TYPE_BAFANG //Bafang Displays, including 'Blaupunkt' 
+#define TS_MODE
+#define DISPLAY_TYPE DISPLAY_TYPE_DEBUG //Bafang Displays, including 'Blaupunkt' 
 #define SPEED_PLL 0
 #define SPEEDSOURCE EXTERNAL
 #define AUTODETECT 0
