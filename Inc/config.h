@@ -22,6 +22,7 @@
 #define DISPLAY_TYPE_KINGMETER      (DISPLAY_TYPE_KINGMETER_618U|DISPLAY_TYPE_KINGMETER_901U)
 #define EXTERNAL 1
 #define INTERNAL 0
+#define LEGALFLAG 
 
 //----------------------------------------------------------------------
 #define TRIGGER_OFFSET_ADC 50
@@ -50,7 +51,7 @@
 #define SPDSHFT 0
 #define SPEEDFILTER 1
 #define SIXSTEPTHRESHOLD 3500
-#define TS_COEF 80000
+#define TS_COEF 20000
 #define PAS_TIMEOUT 4000
 #define RAMP_END 1600
 #define PAS_IMP_PER_TURN 16
